@@ -1,0 +1,17 @@
+# Check if the script is running with elevated privileges
+if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Write-Host "Please run this script as an administrator."
+    Exit
+}
+
+# Enable Virtual Machine Platform feature
+Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -NoRestart
+
+# Check if the feature is enabled successfully
+$vmPlatformEnabled = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform | Select-Object -ExpandProperty State
+
+if ($vmPlatformEnabled -eq "Enabled") {
+    Write-Host "Virtual Machine Platform feature has been enabled successfully."
+} else {
+    Write-Host "Failed to enable Virtual Machine Platform feature."
+}
